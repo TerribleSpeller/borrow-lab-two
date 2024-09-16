@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { app } from './firebase'; // Import your Firebase app configuration
+import { auth } from './firebase'; 
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -10,7 +10,6 @@ function Register() {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        const auth = getAuth(app);
 
         // Check if the email ends with @binus.ac.id
         if (!email.endsWith('@binus.ac.id')) {
