@@ -2,6 +2,8 @@ import "@/styles/globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import Head from 'next/head';
 import NavBar from './components/navrbar.jsx'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; 
 
 
 export default function App({ Component, pageProps }) {
