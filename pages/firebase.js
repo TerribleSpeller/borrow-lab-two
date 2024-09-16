@@ -2,6 +2,9 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
 
 
 const firebaseConfig = {
@@ -19,5 +22,19 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
+export default function firebase() {
+    const router = useRouter();
+
+    useEffect(() => {
+        // Example: Redirect to the dashboard page after Firebase initialization
+        router.push('/dashboard');
+      }, [router]);
+  return (
+    <>
+        
+    </>
+  );
+}
 
 export { auth, database };
+
