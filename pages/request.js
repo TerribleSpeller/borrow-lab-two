@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getDatabase, ref, onValue, push } from "firebase/database";
 import { database } from "./firebase";
-import { auth } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Modal, Button, Form } from 'react-bootstrap';
 import { RulesBorrow } from "./components/rules.jsx";
@@ -10,9 +9,9 @@ import { RulesBorrow } from "./components/rules.jsx";
 
 const db = database;
 
-
 function useAuth() {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const auth = getAuth();
@@ -22,13 +21,15 @@ function useAuth() {
             } else {
                 setUser(null);
             }
+            setLoading(false);
         });
 
         return () => unsubscribe();
     }, []);
 
-    return user;
+    return { user, loading };
 }
+
 
 function Request() {
     const router = useRouter();
@@ -38,7 +39,20 @@ function Request() {
     const [searchQuery, setSearchQuery] = useState("");
     const [labOptions, setLabOptions] = useState([]);
     const [availableQty, setAvailableQty] = useState(0);
-    const user = useAuth();
+    const { user, loading } = useAuth();
+
+    useEffect(() => {
+        if (loading) {
+            return; //Do nothing while loading
+        }
+        if (user) {
+            alert("User is logged in:", user);
+        } else {
+            alert("Please Log In");
+            router.push("/Login");
+        }
+    }, [user, loading, router]);
+    
     const [requesterInfo, setRequesterInfo] = useState({
         uid: "",
         name: "",
@@ -103,14 +117,7 @@ function Request() {
         }
     }, [selectedEquipment, equipment]);
 
-    useEffect(() => {
-        if (!user) {
-            alert("Please Log In")
-            router.push('/login');
-        } else {
-            console.log("Confirmed")
-        }
-    })
+
 
     const handleSubmit = (e) => {
         e.preventDefault();

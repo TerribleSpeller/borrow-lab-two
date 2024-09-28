@@ -2,13 +2,49 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { database } from "./firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const db = database;
+
+
+function useAuth() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return { user, loading };
+}
 
 function Equipment() {
   const [equipment, setEquipment] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
+
+  const { user, loading } = useAuth();
+  useEffect(() => {
+    if (loading) {
+      return; //Do nothing while loading
+    }
+    if (user) {
+      alert("User is logged in:", user);
+    } else {
+      alert("Please Log In");
+      router.push("/Login");
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     const equipmentRef = ref(db, 'labequipment');

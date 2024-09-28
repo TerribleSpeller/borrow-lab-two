@@ -3,15 +3,70 @@ import { getDatabase, ref, onValue, update } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { database } from "./firebase";
 import Link from 'next/link';
+import { useRouter } from "next/router";
 
 const db = database;
+function useAuth2() {
+    const [userCheck, setUserCheck] = useState(null);
+    const [loadingCheck, setLoadingCheck] = useState(true);
 
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, (userCheck) => {
+            if (userCheck) {
+                setUserCheck(userCheck);
+            } else {
+                setUserCheck(null);
+            }
+            setLoadingCheck(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    return { userCheck, loadingCheck };
+}
+
+function useAuth() {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(user);
+            } else {
+                setUser(null);
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    return { user, loading };
+}
 
 function Dashboard() {
     const [requests, setRequests] = useState([]);
     const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const { userCheck, loadingCheck } = useAuth2();
+    const router = useRouter();
 
+    useEffect(() => {
+        if (loadingCheck) {
+            return; //Do nothing while loading
+        }
+        if (userCheck) {
+            alert("User is logged in:", userCheck);
+        } else {
+            alert("Please Log In");
+            router.push("/Login");
+        }
+    }, [userCheck, loadingCheck, router]);
 
     useEffect(() => {
         const auth = getAuth();
@@ -138,8 +193,8 @@ function Dashboard() {
                                         <Link href={`/users/${request.requesterInfo.uid}`}>
                                             {request.requesterInfo.name} | {request.requesterInfo.nim}
                                         </Link>
-                                    </td>                                   
-                                     <td>{new Date(request.timestamp).toLocaleString()}</td>
+                                    </td>
+                                    <td>{new Date(request.timestamp).toLocaleString()}</td>
                                     <td>{request.requesterInfo.startDate}</td>
                                     <td>{request.requesterInfo.returnDate || "None"}</td>
                                     <td>{request.requesterInfo.approval || "Processing"}</td>
