@@ -34,7 +34,7 @@ export default function Home() {
         <div className="d-flex flex-row justify-content-center">
           <Link className="px-2" href="/Login"> Log In </Link>
 
-          <Link className="px-2" href="/signup"> Sign Up! </Link>
+          <Link className="px-2" href="/register"> Sign Up! </Link>
         </div>
 
 

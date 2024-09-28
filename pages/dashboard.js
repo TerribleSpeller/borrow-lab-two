@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { database } from "./firebase";
+import Link from 'next/link';
 
 const db = database;
 
@@ -117,6 +118,7 @@ function Dashboard() {
                             <th>Equipment Name</th>
                             <th>Lab</th>
                             <th>Purpose</th>
+                            <th>Borrower</th>
                             <th>Time Requested</th>
                             <th>Borrow Proposed Date</th>
                             <th>Return Date</th>
@@ -132,12 +134,17 @@ function Dashboard() {
                                     <td>{request.equipmentName}</td>
                                     <td>{request.lab}</td>
                                     <td>{request.requesterInfo.purpose}</td>
-                                    <td>{new Date(request.timestamp).toLocaleString()}</td>
+                                    <td>
+                                        <Link href={`/users/${request.requesterInfo.uid}`}>
+                                            {request.requesterInfo.name} | {request.requesterInfo.nim}
+                                        </Link>
+                                    </td>                                   
+                                     <td>{new Date(request.timestamp).toLocaleString()}</td>
                                     <td>{request.requesterInfo.startDate}</td>
                                     <td>{request.requesterInfo.returnDate || "None"}</td>
                                     <td>{request.requesterInfo.approval || "Processing"}</td>
                                     <td>
-                                        { request.requesterInfo.approval === "Processing" && (
+                                        {request.requesterInfo.approval === "Processing" && (
                                             <button
                                                 className="btn btn-warning m-1"
                                                 onClick={() => handleWithdraw(request.id)}
@@ -145,13 +152,10 @@ function Dashboard() {
                                                 Withdraw
                                             </button>
                                         )}
-                                        { request.requesterInfo.approval === "Approved" && (
-                                            <button
-                                                className="btn btn-success m-1"
-                                                onClick={() => handleReturn(request.id)}
-                                            >
-                                                Mark as Returned
-                                            </button>
+                                        {!isAdmin && request.requesterInfo.approval === "Approved" && (
+                                            <>
+                                                To Return, Contact Pak Faisal
+                                            </>
                                         )}
                                         {isAdmin && request.requesterInfo.approval === "Processing" && (
                                             <>
@@ -169,6 +173,16 @@ function Dashboard() {
                                                 </button>
                                             </>
                                         )}
+                                        {isAdmin && request.requesterInfo.approval === "Approved" && (
+                                            <button
+                                                className="btn btn-success m-1"
+                                                onClick={() => handleReturn(request.id)}
+                                            >
+                                                Mark as Returned
+                                            </button>
+                                        )
+
+                                        }
                                     </td>
                                 </tr>
                             ))}

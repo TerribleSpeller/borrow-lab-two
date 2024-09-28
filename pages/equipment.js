@@ -1,15 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
-import { initializeApp } from "firebase/app";
-import { database } from "./firebase"
+import { database } from "./firebase";
 
-
-// Your Firebase configuration
 const db = database;
 
 function Equipment() {
   const [equipment, setEquipment] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -21,7 +19,6 @@ function Equipment() {
     });
   }, []);
 
-  
   const handleRequest = (item) => {
     router.push({
       pathname: '/request',
@@ -29,9 +26,22 @@ function Equipment() {
     });
   };
 
+  const filteredEquipment = equipment.filter(item =>
+    item.Name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="container mt-5">
       <h2 className="text-center">Lab Equipment</h2>
+      <div className="mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search equipment..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <table className="table table-bordered">
         <thead>
           <tr>
@@ -43,7 +53,7 @@ function Equipment() {
           </tr>
         </thead>
         <tbody>
-          {equipment.map((item) => (
+          {filteredEquipment.map((item) => (
             <tr key={item.id}>
               <td>{item.Name}</td>
               <td>{item.Total}</td>
