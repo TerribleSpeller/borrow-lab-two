@@ -120,7 +120,7 @@ function Dashboard() {
                             <th>Purpose</th>
                             <th>Borrower</th>
                             <th>Time Requested</th>
-                            <th>Borrow Proposed Date</th>
+                            <th>Borrow Date</th>
                             <th>Return Date</th>
                             <th>Status</th>
                             <th>Actions</th>

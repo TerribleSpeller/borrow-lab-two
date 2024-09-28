@@ -88,11 +88,7 @@ const Navbar = () => {
 
                             </>
 
-                            <li className="nav-item pt-3 ">
-                                <Link href="/labactivities" className="nav-link link-module">
-                                    <span>Lab Activites</span>
-                                </Link>
-                            </li>
+
                             <>
                                 {user ? (
                                     <li className="nav-item pt-3 ">
