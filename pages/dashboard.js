@@ -89,6 +89,7 @@ function Dashboard() {
             const data = snapshot.val();
             if (data) {
                 const isAdmin = Object.values(data).some(admin => admin.email === email);
+                alert("Welcome Admin")
                 setIsAdmin(isAdmin);
             } else {
                 setIsAdmin(false);
@@ -171,11 +172,13 @@ function Dashboard() {
                     <thead>
                         <tr>
                             <th>Equipment Name</th>
+                            <th>Qty.</th>
                             <th>Lab</th>
                             <th>Purpose</th>
                             <th>Borrower</th>
                             <th>Time Requested</th>
                             <th>Borrow Date</th>
+                            <th>Planned Return Date</th>
                             <th>Return Date</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -183,10 +186,11 @@ function Dashboard() {
                     </thead>
                     <tbody>
                         {requests
-                            .sort((a, b) => b.timestamp - a.timestamp) // Sort requests in descending order
+                            .sort((a, b) => b.timestamp - a.timestamp) //Sort requests in descending order
                             .map((request) => (
                                 <tr key={request.id}>
                                     <td>{request.equipmentName}</td>
+                                    <td>{request.qty ? ` ${request.qty}` : "1"}</td>
                                     <td>{request.lab}</td>
                                     <td>{request.requesterInfo.purpose}</td>
                                     <td>
@@ -194,50 +198,72 @@ function Dashboard() {
                                             {request.requesterInfo.name} | {request.requesterInfo.nim}
                                         </Link>
                                     </td>
-                                    <td>{new Date(request.timestamp).toLocaleString()}</td>
-                                    <td>{request.requesterInfo.startDate}</td>
+                                    <td>{new Date(request.timestamp).toLocaleString('en-GB', { hour12: false })}</td>
+                                    <td>
+                                        <div className="col">
+                                            <>
+                                                {request.requesterInfo.startDate}
+                                                <>
+                                                    {request.requesterInfo.startTime ? ` | ${request.requesterInfo.startTime}` : ""}
+                                                </>
+                                            </>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="col">
+                                            <>
+                                                {request.requesterInfo.endDate}
+                                                <>
+                                                    {request.requesterInfo.endTime ? ` | ${request.requesterInfo.endTime}` : ""}
+                                                </>
+                                            </>
+                                        </div>
+                                    </td>
                                     <td>{request.requesterInfo.returnDate || "None"}</td>
                                     <td>{request.requesterInfo.approval || "Processing"}</td>
                                     <td>
-                                        {request.requesterInfo.approval === "Processing" && (
-                                            <button
-                                                className="btn btn-warning m-1"
-                                                onClick={() => handleWithdraw(request.id)}
-                                            >
-                                                Withdraw
-                                            </button>
-                                        )}
-                                        {!isAdmin && request.requesterInfo.approval === "Approved" && (
-                                            <>
-                                                To Return, Contact Pak Faisal
-                                            </>
-                                        )}
-                                        {isAdmin && request.requesterInfo.approval === "Processing" && (
-                                            <>
+                                        <div className="col">
+                                            {isAdmin && request.requesterInfo.approval === "Processing" && (
+                                                <div className="col">
+                                                    <button
+                                                        className="btn btn-success m-1"
+                                                        onClick={() => handleApprove(request.id)}
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-danger m-1"
+                                                        onClick={() => handleDeny(request.id)}
+                                                    >
+                                                        Deny
+                                                    </button>
+                                                </div>
+                                            )}
+                                            {isAdmin && request.requesterInfo.approval === "Approved" && (
                                                 <button
                                                     className="btn btn-success m-1"
-                                                    onClick={() => handleApprove(request.id)}
+                                                    onClick={() => handleReturn(request.id)}
                                                 >
-                                                    Approve
+                                                    Mark as Returned
                                                 </button>
+                                            )
+                                            }
+                                            {request.requesterInfo.approval === "Processing" && (
                                                 <button
-                                                    className="btn btn-danger m-1"
-                                                    onClick={() => handleDeny(request.id)}
+                                                    className="btn btn-warning m-1"
+                                                    onClick={() => handleWithdraw(request.id)}
                                                 >
-                                                    Deny
+                                                    Withdraw
                                                 </button>
-                                            </>
-                                        )}
-                                        {isAdmin && request.requesterInfo.approval === "Approved" && (
-                                            <button
-                                                className="btn btn-success m-1"
-                                                onClick={() => handleReturn(request.id)}
-                                            >
-                                                Mark as Returned
-                                            </button>
-                                        )
+                                            )}
+                                            {!isAdmin && request.requesterInfo.approval === "Approved" && (
+                                                <>
+                                                    To Return, Contact Pak Faisal
+                                                </>
+                                            )}
 
-                                        }
+                                        </div>
+
                                     </td>
                                 </tr>
                             ))}

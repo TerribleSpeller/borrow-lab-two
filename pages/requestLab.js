@@ -18,6 +18,7 @@ function useAuth() {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
+                console.log(user.uid)
             } else {
                 setUser(null);
             }
@@ -40,7 +41,6 @@ function Request() {
     const [labOptions, setLabOptions] = useState([]);
     const [availableQty, setAvailableQty] = useState(0);
     const { user, loading } = useAuth();
-    const [ borrowedQty, setBorrowedQty ] = useState(0);
 
     useEffect(() => {
         if (loading) {
@@ -64,7 +64,9 @@ function Request() {
         purpose: "",
         approval: "Processing",
         startDate: "",
-        endDate: ""
+        endDate: "",
+        startTime: "08:00",
+        endTime: "20:00"
     });
     const [showModal, setShowModal] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
@@ -148,13 +150,13 @@ function Request() {
         }
         const selected = equipment.find(item => item.id === selectedEquipment);
         const requestRef = ref(db, 'requests');
+        console.log("Selected Equipment: ", selectedEquipment);
         const newRequest = {
             equipmentId: selectedEquipment,
-            equipmentName: selected.Name,
+            equipmentName: selectedEquipment,
             requesterInfo,
-            lab: labOptions[0],
-            timestamp: Date.now(),
-            qty: borrowedQty
+            lab: selectedEquipment.replace("Lab ", ""),
+            timestamp: Date.now()
         };
         push(requestRef, newRequest)
             .then(() => {
@@ -176,20 +178,12 @@ function Request() {
         }));
     };
 
-    const filteredEquipment = equipment.filter(item =>
-        item.Name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
 
-    const handleEquipmentChange = (event) => {
-        const value = event.target.value;
-        setSelectedEquipment((prevSelected) =>
-            [...prevSelected, value]
-        );
-    };
+
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center">Request Equipment</h2>
+            <h2 className="text-center">Book a Lab</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <h4 htmlFor="requesterinfo">Requester's Info</h4>
@@ -277,7 +271,7 @@ function Request() {
                             ></textarea>
                         </div>
                     </div>
-                    <label>Borrwing Period</label>
+                    <label>Booking Period</label>
                     <div className="row">
                         <div className="col">
                             <label>Start Date</label>
@@ -292,6 +286,19 @@ function Request() {
                             />
                         </div>
                         <div className="col">
+                            <label>Start Time</label>
+                            <input
+                                type="time"
+                                className="form-control"
+                                id="startTime"
+                                name="startTime"
+                                value={requesterInfo.startTime  || "08:00"}
+                                onChange={handleInputChange}
+                                required
+                                style={{ display: 'block' }}
+                            />
+                        </div>
+                        <div className="col">
                             <label>End Date</label>
                             <input
                                 type="date"
@@ -303,18 +310,23 @@ function Request() {
                                 required
                             />
                         </div>
+                        <div className="col">
+                            <label>End Time</label>
+                            <input
+                                type="time"
+                                className="form-control"
+                                id="endTime"
+                                name="endTime"
+                                value={requesterInfo.endTime  || "20:00"}
+                                onChange={handleInputChange}
+                                required
+                                style={{ display: 'block' }}
+                            />
+                        </div>
                     </div>
-                    <label htmlFor="equipmentSelect">Select Equipment:</label>
+                    <label htmlFor="equipmentSelect">Select Lab:</label>
                     <div className="row">
                         <div className="col">
-                            <input
-                                type="text"
-                                id="searchInput"
-                                className="form-control"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search for equipment..."
-                            />
                             <div className="row">
                                 <div className="col">
                                     <select
@@ -323,52 +335,24 @@ function Request() {
                                         value={selectedEquipment}
                                         onChange={(e) => setSelectedEquipment(e.target.value)}
                                     >
-                                        {filteredEquipment.map((item) => (
-                                            <option key={item.id} value={item.id}>
-                                                {item.Name}
-                                            </option>
-                                        ))}
+                                        <option value="" disabled>Select Lab</option>
+                                        <option value="Lab 103" >Lab 103 Expression Technique</option>
+                                        <option value="Lab 104" >Lab 104 Monozukuru</option>
+                                        <option value="Lab 106" >Lab 106 Physics </option>
+                                        <option value="Lab 107" >Lab 107 Ergonomics </option>
+                                        <option value="Lab 111" >Lab 111 Computer</option>
+                                        <option value="Lab 207" >Lab 207 3D Design</option>
+                                        <option value="Lab 207" >Lab 208 Computer</option>
+                                        <option value="Lab 207" >Lab 209 Computer</option>
+
                                     </select>
-                                </div>
-                                <div className="col align-items-center">
-                                    <label className="p-2">From Lab:</label>
-                                </div>
-                                <div className="col">
-                                    <select id="lab-select" className="form-control">
-                                        {labOptions.map((lab, index) => (
-                                            <option key={index} value={lab}>
-                                                {lab}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col">
-                                    <label className="p-2">Available Quantity: {availableQty}</label>
-                                </div>
-                                <div className="col">
-                                    <label className="p-2">Borrowed Quantity:</label>
-                                </div>
-                                <div className="col">
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        min={1}
-                                        max={availableQty}
-                                        required
-                                        onChange={(e) => setBorrowedQty(e.target.value)}
-                                        onInput={(e) => {
-                                            if (e.target.value > availableQty) {
-                                                e.target.value = availableQty;
-                                            }
-                                        }}></input>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button type="submit" className="btn btn-primary mt-3" disabled={availableQty === 0}>Submit Request</button>
+                <button type="submit" className="btn btn-primary mt-3" >Submit Request</button>
             </form>
-            <button type="" className="btn btn-primary mt-3" disabled={availableQty === 0} onChange={handleEquipmentChange}>Add to List</button>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
@@ -376,51 +360,41 @@ function Request() {
                 </Modal.Header>
                 <Modal.Body>
                     <>
-                        <h3>Peraturan Peminjaman Barang Laboratorium:</h3>
+                        <h3>Peraturan dan tata tertib pemakaian ruang Laboratorium:</h3>
                         <p>
-                            <strong>Penggunaan Dalam Kampus</strong>
-                            <br />
-                            Barang laboratorium hanya diperbolehkan digunakan di area kampus.
+
+                            Bacalah semua petunjuk penggunaan peralatan lab sebelum menggunakan Laboratorium
                         </p>
-                        <p>
-                            <strong>Durasi Peminjaman</strong>
-                            <br />
-                            Peminjaman barang laboratorium disarankan untuk jangka waktu 1 hari. Jika memerlukan waktu lebih dari 1 hari, maka peminjam harus berkoordinasi terlebih dahulu dengan dosen pembimbing.
-                        </p>
-                        <p>
-                            <strong>Pengajuan Peminjaman Jangka Panjang</strong>
-                            <br />
-                            Jika dosen pembimbing mengizinkan peminjaman jangka panjang, maka peminjam wajib mengirimkan email kepada kepala laboratorium  (benedictus.rahardjo@binus.edu) dan cc kepala program untuk diketahui bersama-sama.
-                        </p>
-                        <p>
-                            <strong>Batas Maksimal Peminjaman</strong>
-                            <br />
-                            Batas maksimal peminjaman barang laboratorium adalah 1 bulan .
-                        </p>
-                        <p>
-                            <strong>Perpanjangan Peminjaman</strong>
-                            <br />
-                            Setelah 1 bulan, jika peminjam masih memerlukan barang yang dipinjam, maka peminjam perlu mengajukan permohonan ulang peminjaman dari proses awal.
-                        </p>
-                        <p>
-                            <strong>Pengembalian Barang Pinjaman</strong>
-                            <br />
-                            Peminjam wajib mengembalikan barang yang dipinjam kepada laboran secara langsung.
-                        </p>
-                        <p>
-                            <strong>Tanggung Jawab atas Kerusakan atau Kehilangan</strong>
-                            <br />
-                            Jika peminjam merusak atau menghilangkan barang laboratorium, peminjam wajib mengganti rugi senilai harga barang tersebut atau mengganti barang baru dengan tipe dan spesifikasi yang sama persis.
-                        </p>
-                        <p>
-                            Semua peminjam wajib mematuhi peraturan ini demi kelancaran dan keamanan penggunaan barang laboratorium. Terima kasih atas kerjasamanya.
-                        </p>
-                        <p>
-                            Tertanda,
-                        </p>
-                        <p>
-                            Laboratorium
-                        </p>
+                        <ul className="list-group mt-3">
+                            <li className="list-group-item">
+                                Gunakan peralatan Laboratorium dengan hati-hati. Dilarang makan dan minum di dalam Laboratorium.
+                            </li>
+                            <li className="list-group-item">
+                                Dilarang berlari-larian maupun melakukan hal yang tidak semestinya yang dapat membahayakan orang lain di dalam Laboratorium.
+                            </li>
+                            <li className="list-group-item">
+                                Bagi yang membawa makanan atau minuman harap disimpan pada tempat yang disediakan, tidak menaruh di atas meja komputer karena dapat membahayakan pengguna lab jika air tumpah mengenai komponen komputer.
+                            </li>
+                            <li className="list-group-item">
+                                Gunakanlah peralatan seperti sarung tangan, kacamata pelindung, dan masker (Khusus expression technique lab).
+                            </li>
+                            <li className="list-group-item">
+                                Simpanlah tas di tempat yang telah ditentukan.
+                            </li>
+                            <li className="list-group-item">
+                                Simpanlah kembali peralatan yang telah dibersihkan setelah digunakan pada tempatnya.
+                            </li>
+                            <li className="list-group-item">
+                                Jagalah kebersihan Laboratorium dan bersihkan kembali ketika selesai menggunakan lab.
+                            </li>
+                            <li className="list-group-item">
+                                Jika terdapat hal yang dirasa butuh bantuan dari asisten laboratorium, harap lapor pada staff laboratorium atau asisten lab yang terkait.
+                            </li>
+                            <li className="list-group-item">
+                                Untuk peminjaman di luar praktikum, mohon menghubungi asisten laboratorium atau staff laboratorium dan kemudian diisi log-book peminjaman. Pengembalian peminjaman, harap diinformasikan kepada asisten laboratorium atau staff laboratorium dengan mengisi log-book.
+                            </li>
+                        </ul>
+                        <br />
                     </>
                     <Form.Check
                         type="checkbox"

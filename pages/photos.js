@@ -30,27 +30,27 @@ export default function photos() {
                 <Carousel centerMode={true} autoPlay={true} centerSlidePercentage={70} infiniteLoop={true} showThumbs={false} >
                     <div>
                         <Image src={lab1} width={500} height={500} alt="Picture of the author" />
-                        <p className="legend">Lab 104</p>
+                        <p className="legend">Lab 103</p>
                     </div>
                     <div>
                         <Image src={lab2} width={500} height={500} alt="Picture of the author" />
-                        <p className="legend">Lab 104</p>
+                        <p className="legend">Lab 103</p>
                     </div>
                     <div>
                         <Image src={lab3} width={500} height={500} alt="Picture of the author" />
-                        <p className="legend">Lab 104</p>
+                        <p className="legend">Lab 103</p>
                     </div>
                     <div>
                         <Image src={lab4} width={500} height={500} alt="Picture of the author" />
-                        <p className="legend">Lab 105</p>
+                        <p className="legend">Lab 104</p>
                     </div>
                     <div>
                         <Image src={lab5} width={500} height={500} alt="Picture of the author" />
-                        <p className="legend">Lab 105</p>
+                        <p className="legend">Lab 104</p>
                     </div>
                     <div>
                         <Image src={lab6} width={500} height={500} alt="Picture of the author" />
-                        <p className="legend">Lab 105</p>
+                        <p className="legend">Lab 104</p>
                     </div>
                     <div>
                         <Image src={lab7} width={500} height={500} alt="Picture of the author" />

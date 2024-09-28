@@ -76,6 +76,7 @@ const Navbar = () => {
                                             < Link href="/equipment" className="nav-link link-module dropbtn">Lab Equipment</Link>
                                             <div class="dropdown-content">
                                                 <Link href="/request" className="nav-link link-module">Request Equipment</Link>
+                                                <Link href="/requestLab" className="nav-link link-module">Book a Lab</Link>
                                             </div>
                                         </div>
                                     </li>
