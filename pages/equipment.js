@@ -39,7 +39,7 @@ function Equipment() {
       return; //Do nothing while loading
     }
     if (user) {
-      alert("User is logged in:", user);
+      //alert("User is logged in:", user);    
     } else {
       alert("Please Log In");
       router.push("/Login");

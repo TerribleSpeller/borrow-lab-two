@@ -61,7 +61,7 @@ function Dashboard() {
             return; //Do nothing while loading
         }
         if (userCheck) {
-            alert("User is logged in:", userCheck);
+            //alert("User is logged in:", userCheck);
         } else {
             alert("Please Log In");
             router.push("/Login");
@@ -98,7 +98,7 @@ function Dashboard() {
 
 
     useEffect(() => {
-        if (user) {
+        if (userCheck) {
             const requestsRef = ref(db, 'requests');
             onValue(requestsRef, (snapshot) => {
                 const data = snapshot.val();
@@ -114,7 +114,7 @@ function Dashboard() {
                 }
             });
         }
-    }, [user]);
+    }, [userCheck]);
 
     const handleWithdraw = (requestId) => {
         const requestRef = ref(database, `requests/${requestId}/requesterInfo`);

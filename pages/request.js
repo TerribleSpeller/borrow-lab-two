@@ -46,13 +46,13 @@ function Request() {
             return; //Do nothing while loading
         }
         if (user) {
-            alert("User is logged in:", user);
+            //alert("User is logged in:", user);     
         } else {
             alert("Please Log In");
             router.push("/Login");
         }
     }, [user, loading, router]);
-    
+
     const [requesterInfo, setRequesterInfo] = useState({
         uid: "",
         name: "",
