@@ -165,7 +165,7 @@ function Dashboard() {
     };
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-5 table-responsive ">
             <h2 className="text-center">{isAdmin ? "Admin Dashboard" : "Your Applications"}</h2>
             {requests.length > 0 ? (
                 <table className="table">

@@ -67,7 +67,7 @@ function Equipment() {
   );
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 table-responsive">
       <h2 className="text-center">Lab Equipment</h2>
       <div className="mb-3">
         <input

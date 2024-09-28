@@ -21,7 +21,7 @@ const Navbar = () => {
         <div className="container " id="Navbar" >
             <div className="">
                 <div className="row bg-light border border-light-subtle border-2 rounded-5 rounded-top-0">
-                    <header className="d-flex flex-wrap justify-content-center pt-3">
+                    <header className="d-flex flex-wrap justify-content-center pt-3 mb-4">
                         <Image
                             className="bi me-2 icon"
                             width={124}
@@ -56,7 +56,7 @@ const Navbar = () => {
                             }
                             <li className="nav-item pt-3">
                                 <div className="dropdown">
-                                    <button className="nav-link dropbtn btn">Home</button>
+                                    <span className="nav-link dropbtn btn">Home</span>
                                     <div class="dropdown-content">
                                         <Link href="/photos" className="nav-link link-module">Photos</Link>
                                         <Link href="/labs" className="nav-link link-module">BASE LABs</Link>
@@ -73,8 +73,9 @@ const Navbar = () => {
                                 {user ? (
                                     <li className="nav-item pt-3">
                                         <div className="dropdown">
-                                            < Link href="/equipment" className="nav-link link-module dropbtn">Lab Equipment</Link>
+                                            <span className="nav-link dropbtn btn">Lab Equipment</span>
                                             <div class="dropdown-content">
+                                                <Link href="/equipment" className="nav-link link-module">Equipment List</Link>
                                                 <Link href="/request" className="nav-link link-module">Request Equipment</Link>
                                                 <Link href="/requestLab" className="nav-link link-module">Book a Lab</Link>
                                             </div>

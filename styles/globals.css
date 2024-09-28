@@ -103,3 +103,10 @@ input[type="time"] {
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
+/*So you can scroll lah */
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Enables smooth scrolling on iOS */
+}
