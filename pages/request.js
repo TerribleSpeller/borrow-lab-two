@@ -105,6 +105,7 @@ function Request() {
 
     useEffect(() => {
         if (!user) {
+            alert("Please Log In")
             router.push('/login');
         } else {
             console.log("Confirmed")
