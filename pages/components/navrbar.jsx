@@ -69,25 +69,25 @@ const Navbar = () => {
                                 </Link>
                             </li>
                             <>
+                                <li className="nav-item pt-3">
+                                    <div className="dropdown">
+                                        <span className="nav-link dropbtn btn">Lab Equipment</span>
+                                        <div class="dropdown-content">
+                                            <Link href="/equipment" className="nav-link link-module">Equipment List</Link>
+                                            {user ? (
+                                                <>
+                                                    <Link href="/request" className="nav-link link-module">Request Equipment</Link>
+                                                    <Link href="/requestLab" className="nav-link link-module">Book a Lab</Link>
+                                                </>
+                                            ) : (
+                                                <>
+                                                </>
+                                            )
 
-                                {user ? (
-                                    <li className="nav-item pt-3">
-                                        <div className="dropdown">
-                                            <span className="nav-link dropbtn btn">Lab Equipment</span>
-                                            <div class="dropdown-content">
-                                                <Link href="/equipment" className="nav-link link-module">Equipment List</Link>
-                                                <Link href="/request" className="nav-link link-module">Request Equipment</Link>
-                                                <Link href="/requestLab" className="nav-link link-module">Book a Lab</Link>
-                                            </div>
+                                            }
                                         </div>
-                                    </li>
-                                ) : (
-                                    <>
-                                    </>
-                                )
-
-                                }
-
+                                    </div>
+                                </li>
                             </>
 
 

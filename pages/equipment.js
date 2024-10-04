@@ -41,8 +41,8 @@ function Equipment() {
     if (user) {
       //alert("User is logged in:", user);    
     } else {
-      alert("Please Log In");
-      router.push("/Login");
+      // alert("Please Log In");
+      // router.push("/Login");
     }
   }, [user, loading, router]);
 

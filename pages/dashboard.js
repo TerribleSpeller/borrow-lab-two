@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getDatabase, ref, onValue, update } from "firebase/database";
+import { getDatabase, ref, get, onValue, update } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { database } from "./firebase";
 import Link from 'next/link';
@@ -129,27 +129,70 @@ function Dashboard() {
             });
     };
 
-    const handleReturn = (requestId) => {
+    const handleReturn = (requestId, equipmentID, qty) => {
         const requestRef = ref(database, `requests/${requestId}/requesterInfo`);
+        const updateEquipmentRef = ref(database, `labequipment/${equipmentID}`);
         const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-        update(requestRef, { approval: "Returned", returnDate: currentDate })
-            .then(() => {
-                console.log("Request marked as returned successfully");
-            })
-            .catch((error) => {
-                console.error("Error marking request as returned: ", error);
-            });
+    
+        get(updateEquipmentRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const currentBorrowedQuantity = snapshot.val().borrowedQuantity || 0;
+                const newBorrowedQuantity = currentBorrowedQuantity - Number(qty);
+    
+                update(requestRef, { approval: "Returned", returnDate: currentDate })
+                    .then(() => {
+                        console.log("Request marked as returned successfully");
+    
+                        update(updateEquipmentRef, { Borrowed: newBorrowedQuantity })
+                            .then(() => {
+                                console.log("Equipment borrowed quantity updated successfully");
+                            })
+                            .catch((error) => {
+                                console.error("Error updating borrowed quantity: ", error);
+                            });
+                    })
+                    .catch((error) => {
+                        console.error("Error marking request as returned: ", error);
+                    });
+            } else {
+                console.error("Equipment not found");
+            }
+        }).catch((error) => {
+            console.error("Error fetching equipment data: ", error);
+        });
     };
 
-    const handleApprove = (requestId) => {
+    const handleApprove = (requestId, equipmentId,qty) => {
         const requestRef = ref(database, `requests/${requestId}/requesterInfo`);
-        update(requestRef, { approval: "Approved" })
-            .then(() => {
-                console.log("Request approved successfully");
-            })
-            .catch((error) => {
-                console.error("Error approving request: ", error);
-            });
+        const updateEquipmentRef = ref(database, `labequipment/${equipmentId}`);
+        get(updateEquipmentRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const currentBorrowedQuantity = snapshot.val().Borrowed || 0;
+                const newBorrowedQuantity = currentBorrowedQuantity + Number(qty);
+    
+                // Update the request approval status
+                update(requestRef, { approval: "Approved" })
+                    .then(() => {
+                        console.log("Request approved successfully");
+    
+                        // Update the borrowedQuantity in the equipment
+                        update(updateEquipmentRef, { Borrowed: newBorrowedQuantity })
+                            .then(() => {
+                                console.log("Equipment borrowed quantity updated successfully");
+                            })
+                            .catch((error) => {
+                                console.error("Error updating borrowed quantity: ", error);
+                            });
+                    })
+                    .catch((error) => {
+                        console.error("Error approving request: ", error);
+                    });
+            } else {
+                console.error("Equipment not found");
+            }
+        }).catch((error) => {
+            console.error("Error fetching equipment data: ", error);
+        });
     };
 
     const handleDeny = (requestId) => {
@@ -227,7 +270,7 @@ function Dashboard() {
                                                 <div className="col">
                                                     <button
                                                         className="btn btn-success m-1"
-                                                        onClick={() => handleApprove(request.id)}
+                                                        onClick={() => handleApprove(request.id, request.equipmentId,request.qty)}
                                                     >
                                                         Approve
                                                     </button>
@@ -242,7 +285,7 @@ function Dashboard() {
                                             {isAdmin && request.requesterInfo.approval === "Approved" && (
                                                 <button
                                                     className="btn btn-success m-1"
-                                                    onClick={() => handleReturn(request.id)}
+                                                    onClick={() => handleReturn(request.id, request.equipmentId,request.qty)}
                                                 >
                                                     Mark as Returned
                                                 </button>
