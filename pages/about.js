@@ -12,7 +12,7 @@ export default function about() {
             <div className="container">
                 <h2>Contact Us</h2>
                     <ul>
-                        <li>Head of Lab : Pak Ben</li>
+                        <li>Head of Lab : Pak Bendictus Rahajo </li>
                         <li>Lab Staff: Faisal Kurniawan (0881-5935-518)</li> 
                         <li>Technical Inquiries: 
                             <br/>

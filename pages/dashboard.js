@@ -136,7 +136,7 @@ function Dashboard() {
     
         get(updateEquipmentRef).then((snapshot) => {
             if (snapshot.exists()) {
-                const currentBorrowedQuantity = snapshot.val().borrowedQuantity || 0;
+                const currentBorrowedQuantity = snapshot.val().Borrowed || 0;
                 const newBorrowedQuantity = currentBorrowedQuantity - Number(qty);
     
                 update(requestRef, { approval: "Returned", returnDate: currentDate })
