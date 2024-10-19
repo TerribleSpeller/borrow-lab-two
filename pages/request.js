@@ -119,8 +119,6 @@ function Request() {
         }
     }, [selectedEquipment, equipment]);
 
-
-
     const handleSubmit = (e) => {
         e.preventDefault();
         setShowModal(true);
@@ -137,9 +135,9 @@ function Request() {
         currentDate.setHours(0);
         // console.log(requesterInfo.startDate)
         // console.log(requesterInfo.endDate)
-        console.log(currentDate)
-        console.log(start)
-        console.log(end)
+        // console.log(currentDate)
+        // console.log(start)
+        // console.log(end)
 
         if (!startDate || !endDate || start > end) {
             alert("Please ensure the start date is before the end date and both dates are provided.");
@@ -166,7 +164,7 @@ function Request() {
                 timestamp: Date.now(),
                 qty: item.qty
             };
-        
+
             push(requestRef, newRequest)
                 .then(() => {
                     console.log("Request submitted successfully for", item.equipment);
@@ -177,7 +175,7 @@ function Request() {
                     alert(error);
                 });
         });
-        
+
         alert("All requests submitted successfully");
     };
 
@@ -202,12 +200,17 @@ function Request() {
 
     const handleAddToList = () => {
         if (selectedEquipment && availableQty > 0) {
-            console.log(selectedEquipment)
+            console.log(equipment)
+            // console.log(selectedEquipment)
             setToBorrowList([...toBorrowList, { equipment: selectedEquipment, qty: borrowedQty }]);
             setSelectedEquipment('');
             setAvailableQty(0);
-            console.log(toBorrowList);
+            // console.log(toBorrowList);
         }
+    };
+
+    const handleRemoveFromList = (index) => {
+        setToBorrowList((prevList) => prevList.filter((_, i) => i !== index));
     };
 
     return (
@@ -346,7 +349,7 @@ function Request() {
                                         value={selectedEquipment}
                                         onChange={(e) => setSelectedEquipment(e.target.value)}
                                     >
-                                         <option value="" disabled>Select Equipment</option>
+                                        <option value="" disabled>Select Equipment</option>
                                         {filteredEquipment.map((item) => (
                                             <option key={item.id} value={item.id}>
                                                 {item.Name}
@@ -416,13 +419,22 @@ function Request() {
                             <tr>
                                 <th>Equipment</th>
                                 <th>Qty</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {toBorrowList.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.equipment}</td>
+                                    <td>{equipment[item.equipment].Name}</td>
                                     <td>{item.qty}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleRemoveFromList(index)}
+                                        >
+                                            Remove
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
