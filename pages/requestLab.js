@@ -133,6 +133,7 @@ function Request() {
         setShowModal(false);
         const { startDate, endDate } = requesterInfo;
         const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
         const start = new Date(startDate);
         const end = new Date(endDate);
         if (!startDate || !endDate || start > end) {
