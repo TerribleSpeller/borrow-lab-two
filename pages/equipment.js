@@ -93,7 +93,7 @@ function Equipment() {
             <tr key={item.id}>
               <td>{item.Name}</td>
               <td>{item.Total}</td>
-              <td>{item.Borrowed}</td>
+              <td>{item.Total - item.Borrowed}</td>
               <td>{item.Lab}</td>
               <td>
                 <button className="btn btn-primary" onClick={() => handleRequest(item)}>

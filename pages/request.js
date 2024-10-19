@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getDatabase, ref, onValue, push } from "firebase/database";
+import { getDatabase, ref, onValue, push, set } from "firebase/database";
 import { database } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Modal, Button, Form } from 'react-bootstrap';
@@ -40,7 +40,8 @@ function Request() {
     const [labOptions, setLabOptions] = useState([]);
     const [availableQty, setAvailableQty] = useState(0);
     const { user, loading } = useAuth();
-    const [ borrowedQty, setBorrowedQty ] = useState(0);
+    const [borrowedQty, setBorrowedQty] = useState(0);
+    const [toBorrowList, setToBorrowList] = useState([]);
 
     useEffect(() => {
         if (loading) {
@@ -133,6 +134,13 @@ function Request() {
         const currentDate = new Date();
         const start = new Date(startDate);
         const end = new Date(endDate);
+        currentDate.setHours(0);
+        // console.log(requesterInfo.startDate)
+        // console.log(requesterInfo.endDate)
+        console.log(currentDate)
+        console.log(start)
+        console.log(end)
+
         if (!startDate || !endDate || start > end) {
             alert("Please ensure the start date is before the end date and both dates are provided.");
             return;
@@ -146,26 +154,31 @@ function Request() {
             alert("Please ensure the start date is before the end date and both dates are provided.");
             return;
         }
-        const selected = equipment.find(item => item.id === selectedEquipment);
         const requestRef = ref(db, 'requests');
-        const newRequest = {
-            equipmentId: selectedEquipment,
-            equipmentName: selected.Name,
-            requesterInfo,
-            lab: labOptions[0],
-            timestamp: Date.now(),
-            qty: borrowedQty
-        };
-        push(requestRef, newRequest)
-            .then(() => {
-                console.log("Request submitted successfully");
-                alert("Request submitted successfully");
-            })
-            .catch((error) => {
-                console.error("Error submitting request: ", error);
-                alert("Error! Please try again later");
-                alert(error);
-            });
+
+        toBorrowList.forEach(item => {
+            const selected = equipment.find(equip => equip.id === item.equipment);
+            const newRequest = {
+                equipmentId: item.equipment,
+                equipmentName: selected.Name,
+                requesterInfo,
+                lab: labOptions[0],
+                timestamp: Date.now(),
+                qty: item.qty
+            };
+        
+            push(requestRef, newRequest)
+                .then(() => {
+                    console.log("Request submitted successfully for", item.equipment);
+                })
+                .catch((error) => {
+                    console.error("Error submitting request for", item.equipment, ":", error);
+                    alert("Error! Please try again later");
+                    alert(error);
+                });
+        });
+        
+        alert("All requests submitted successfully");
     };
 
     const handleInputChange = (e) => {
@@ -187,10 +200,20 @@ function Request() {
         );
     };
 
+    const handleAddToList = () => {
+        if (selectedEquipment && availableQty > 0) {
+            console.log(selectedEquipment)
+            setToBorrowList([...toBorrowList, { equipment: selectedEquipment, qty: borrowedQty }]);
+            setSelectedEquipment('');
+            setAvailableQty(0);
+            console.log(toBorrowList);
+        }
+    };
+
     return (
         <div className="container mt-5">
             <h2 className="text-center">Request Equipment</h2>
-            <form onSubmit={handleSubmit}>
+            <form >
                 <div className="form-group">
                     <h4 htmlFor="requesterinfo">Requester's Info</h4>
                     <div className="row">
@@ -323,6 +346,7 @@ function Request() {
                                         value={selectedEquipment}
                                         onChange={(e) => setSelectedEquipment(e.target.value)}
                                     >
+                                         <option value="" disabled>Select Equipment</option>
                                         {filteredEquipment.map((item) => (
                                             <option key={item.id} value={item.id}>
                                                 {item.Name}
@@ -366,9 +390,45 @@ function Request() {
                         </div>
                     </div>
                 </div>
-                <button type="submit" className="btn btn-primary mt-3" disabled={availableQty === 0}>Submit Request</button>
+                <div className="row">
+                    <div className="col">
+                        <button type="" className="btn btn-primary mt-3" disabled={availableQty === 0} onClick={handleAddToList}>Add to List</button>
+                        <button type="submit" className="btn btn-primary mt-3  mx-2" disabled={toBorrowList.length === 0}
+                            onClick={handleSubmit}>Submit Request</button>
+                    </div>
+                    <div className="col">
+                    </div>
+
+                    <div className="col">
+
+                    </div>
+                    <div className="col-6">
+
+                    </div>
+                </div>
             </form>
-            <button type="" className="btn btn-primary mt-3" disabled={availableQty === 0} onChange={handleEquipmentChange}>Add to List</button>
+
+            {toBorrowList.length > 0 && (
+                <div className="mt-5">
+                    <h3>Items to Borrow</h3>
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Equipment</th>
+                                <th>Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {toBorrowList.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.equipment}</td>
+                                    <td>{item.qty}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
