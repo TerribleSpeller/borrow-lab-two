@@ -13,7 +13,7 @@ export default function about() {
                 <h2>Contact Us</h2>
                     <ul>
                         <li>Head of Lab : Pak Bendictus Rahajo </li>
-                        <li>Lab Staff: Faisal Kurniawan (0881-5935-518)</li> 
+                        <li>Laboratory Staff: Pak Faizal Kurniawan  (0881-5935-518)</li> 
                         <li>Technical Inquiries: 
                             <br/>
                             WA: 081293820288 (Technician  - Jason Alexander)

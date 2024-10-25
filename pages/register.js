@@ -127,10 +127,11 @@ function Register() {
                             <option value="ARE">Automotive and Robotics Engineering</option>
                             <option value="PDE">Product Design Engineering</option>
                             <option value="BE">Business Engineering</option>
+                            <option value="staff">Staff</option>
                         </select>
                     </div>
                     <div className="mb-3 col">
-                        <label htmlFor="phone" className="form-label">NIM</label>
+                        <label htmlFor="phone" className="form-label">NIM / Kode Dosen</label>
                         <input
                             type="text"
                             className="form-control"
