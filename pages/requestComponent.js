@@ -133,6 +133,7 @@ function Request() {
         const start = new Date(startDate);
         const end = new Date(endDate);
         currentDate.setHours(0);
+        end.setHours(20);
         // console.log(requesterInfo.startDate)
         // console.log(requesterInfo.endDate)
         // console.log(currentDate)
@@ -148,7 +149,7 @@ function Request() {
             alert("Please ensure both dates are in the future.");
             return;
         }
-        if (!startDate || !endDate || new Date(startDate) >= new Date(endDate)) {
+        if (!startDate || !endDate || new Date(startDate) > new Date(endDate)) {
             alert("Please ensure the start date is before the end date and both dates are provided.");
             return;
         }

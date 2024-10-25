@@ -133,6 +133,7 @@ function Request() {
         const start = new Date(startDate);
         const end = new Date(endDate);
         currentDate.setHours(0);
+        end.setHours(20);
         // console.log(requesterInfo.startDate)
         // console.log(requesterInfo.endDate)
         // console.log(currentDate)
