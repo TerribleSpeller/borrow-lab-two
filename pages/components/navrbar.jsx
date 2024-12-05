@@ -64,13 +64,12 @@ const Navbar = () => {
                                 </div>
                             </li>
                             <li className="nav-item pt-3 ">
-                            <Link href="/requestLab" className="nav-link link-module">Book a Lab</Link>
-
-                            </li>
-                            <li className="nav-item pt-3 ">
                                 <Link href="/projects" className="nav-link link-module">
                                     <span>Projects</span>
                                 </Link>
+                            </li>
+                            <li className="nav-item pt-3 ">
+                                <Link href="/requestLab" className="nav-link link-module">Book a Lab</Link>
                             </li>
                             <>
                                 <li className="nav-item pt-3">
@@ -84,7 +83,7 @@ const Navbar = () => {
                                                     <Link href="/requestComponent" className="nav-link link-module">Request Components</Link>
 
                                                 </>
-                                                
+
                                             ) : (
                                                 <>
                                                 </>

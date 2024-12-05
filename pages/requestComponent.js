@@ -216,7 +216,7 @@ function Request() {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center">Request Equipment</h2>
+            <h2 className="text-center">Request Components</h2>
             <form >
                 <div className="form-group">
                     <h4 htmlFor="requesterinfo">Requester's Info</h4>
@@ -331,7 +331,7 @@ function Request() {
                             />
                         </div>
                     </div>
-                    <label htmlFor="equipmentSelect">Select Equipment:</label>
+                    <label htmlFor="equipmentSelect">Select Component:</label>
                     <div className="row">
                         <div className="col">
                             <input
@@ -340,7 +340,7 @@ function Request() {
                                 className="form-control"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search for equipment..."
+                                placeholder="Search for components..."
                             />
                             <div className="row">
                                 <div className="col">
@@ -350,12 +350,12 @@ function Request() {
                                         value={selectedEquipment}
                                         onChange={(e) => setSelectedEquipment(e.target.value)}
                                     >
-                                        <option value="" disabled>Select Equipment</option>
-                                        {filteredEquipment.map((item) => (
-                                            <option key={item.id} value={item.id}>
-                                                {item.Name}
-                                            </option>
-                                        ))}
+                                        <option value="" disabled>Select Component</option>
+                                            {filteredEquipment.map((item) => (
+                                                <option key={item.id} value={item.id}>
+                                                    {item.Name}
+                                                </option>
+                                            ))}
                                     </select>
                                 </div>
                                 <div className="col align-items-center">
